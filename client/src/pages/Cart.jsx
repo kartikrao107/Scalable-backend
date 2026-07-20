@@ -5,7 +5,7 @@ import { placeOrder } from '../api/orders';
 import { applyCoupon } from '../api/coupons';
 import Alert from '../components/Alert';
 import { PageLoader } from '../components/Spinner';
-
+import { getAddresses } from "../api/address";
 export default function Cart() {
   const [cart, setCart] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -13,12 +13,14 @@ export default function Cart() {
   const [checkout, setCheckout] = useState({ addressId: '', couponCode: '' });
   const [couponPreview, setCouponPreview] = useState(null);
   const [checkingOut, setCheckingOut] = useState(false);
-
+const [addresses, setAddresses] = useState([]);
   const loadCart = async () => {
     setLoading(true);
     try {
       const { data } = await getCart();
       setCart(data.cart);
+      const addressRes = await getAddresses();
+setAddresses(addressRes.data.addresses);
     } catch (err) {
       setMessage({ type: 'error', text: err.response?.data?.message || 'Failed to load cart' });
     } finally {
@@ -29,10 +31,13 @@ export default function Cart() {
   useEffect(() => { loadCart(); }, []);
 
   const items = cart?.items || [];
-  const subtotal = items.reduce(
-    (sum, item) => sum + (item.product?.price || 0) * item.quantity,
-    0
-  );
+ const subtotal = items.reduce((sum, item) => {
+  const discountedPrice =
+    item.product.price -
+    (item.product.price * item.product.discount) / 100;
+
+  return sum + discountedPrice * item.quantity;
+}, 0);
 
   const handleUpdateQty = async (itemId, quantity) => {
     if (quantity < 1) return;
@@ -68,7 +73,7 @@ export default function Cart() {
     try {
       const { data } = await applyCoupon({ code: checkout.couponCode, amount: subtotal });
       setCouponPreview(data.result);
-      setMessage({ type: 'success', text: `Discount: $${data.result.discount.toFixed(2)}` });
+      setMessage({ type: 'success', text: `Discount: ₹${data.result.discount.toFixed(2)}` });
     } catch (err) {
       setCouponPreview(null);
       setMessage({ type: 'error', text: err.response?.data?.message || 'Invalid coupon' });
@@ -78,7 +83,7 @@ export default function Cart() {
   const handleCheckout = async (e) => {
     e.preventDefault();
     if (!checkout.addressId) {
-      setMessage({ type: 'error', text: 'Address ID is required to place an order' });
+      setMessage({ type: 'error', text: 'Address is required to place an order' });
       return;
     }
     setCheckingOut(true);
@@ -129,7 +134,12 @@ export default function Cart() {
                   <Link to={`/products/${item.productId}`} className="font-medium hover:text-primary-600">
                     {item.product?.name}
                   </Link>
-                  <p className="text-primary-600 font-semibold">${item.product?.price?.toFixed(2)}</p>
+                  <p className="text-primary-600 font-semibold">
+  ₹{(
+    item.product.price -
+    (item.product.price * item.product.discount) / 100
+  ).toFixed(2)}
+</p>
                   <div className="mt-auto flex items-center gap-3">
                     <button
                       type="button"
@@ -164,17 +174,17 @@ export default function Cart() {
             <div className="space-y-2 text-sm">
               <div className="flex justify-between">
                 <span className="text-gray-500">Subtotal</span>
-                <span>${subtotal.toFixed(2)}</span>
+                <span>₹{subtotal.toFixed(2)}</span>
               </div>
               {couponPreview && (
                 <>
                   <div className="flex justify-between text-green-600">
                     <span>Discount</span>
-                    <span>-${couponPreview.discount.toFixed(2)}</span>
+                    <span>-₹{couponPreview.discount.toFixed(2)}</span>
                   </div>
                   <div className="flex justify-between font-semibold">
                     <span>Total</span>
-                    <span>${couponPreview.finalAmount.toFixed(2)}</span>
+                    <span>₹{couponPreview.finalAmount.toFixed(2)}</span>
                   </div>
                 </>
               )}
@@ -182,18 +192,26 @@ export default function Cart() {
 
             <form onSubmit={handleCheckout} className="mt-6 space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700">Address ID</label>
-                <input
-                  type="text"
-                  required
-                  value={checkout.addressId}
-                  onChange={(e) => setCheckout({ ...checkout, addressId: e.target.value })}
-                  placeholder="Enter your address ID"
-                  className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
-                />
-                <p className="mt-1 text-xs text-gray-400">
-                  Required by POST /api/orders/. Address routes are not mounted on the backend.
-                </p>
+                <label className="block text-sm font-medium text-gray-700">Select Address</label>
+               <select
+  required
+  value={checkout.addressId}
+  onChange={(e) =>
+    setCheckout({
+      ...checkout,
+      addressId: e.target.value,
+    })
+  }
+  className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
+>
+  <option value="">Select Address</option>
+
+  {addresses.map((address) => (
+    <option key={address.id} value={address.id}>
+      {address.fullName} - {address.street}, {address.city}
+    </option>
+  ))}
+</select>
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700">Coupon Code</label>

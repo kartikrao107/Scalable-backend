@@ -31,6 +31,9 @@ export default function Layout() {
                 <NavLink to="/wishlist" className={navLinkClass}>Wishlist</NavLink>
                 <NavLink to="/orders" className={navLinkClass}>Orders</NavLink>
                 <NavLink to="/profile" className={navLinkClass}>Profile</NavLink>
+                <NavLink to="/address" className={navLinkClass}>
+  Addresses
+</NavLink>
               </>
             )}
             {(isAdmin || isSeller) && (
@@ -60,6 +63,7 @@ export default function Layout() {
                 >
                   Sign up
                 </Link>
+                <Link to="/address">My Addresses</Link>
               </>
             )}
           </div>

@@ -71,7 +71,7 @@ export default function Wishlist() {
               <Link to={`/products/${item.productId}`} className="font-medium hover:text-primary-600">
                 {item.product?.name}
               </Link>
-              <p className="text-primary-600 font-semibold">${item.product?.price?.toFixed(2)}</p>
+              <p className="text-primary-600 font-semibold">₹{item.product?.price?.toFixed(2)}</p>
               <div className="mt-4 flex gap-2">
                 <button
                   type="button"

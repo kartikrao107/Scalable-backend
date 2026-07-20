@@ -119,10 +119,10 @@ export default function ProductDetail() {
             <p className="text-sm text-gray-500">Brand: {product.brand}</p>
           )}
           <div className="mt-4 flex items-baseline gap-3">
-            <span className="text-3xl font-bold text-primary-600">${discountedPrice?.toFixed(2)}</span>
+            <span className="text-3xl font-bold text-primary-600">₹{discountedPrice?.toFixed(2)}</span>
             {product.discount > 0 && (
               <>
-                <span className="text-lg text-gray-400 line-through">${product.price?.toFixed(2)}</span>
+                <span className="text-lg text-gray-400 line-through">₹{product.price?.toFixed(2)}</span>
                 <span className="rounded-full bg-red-100 px-2 py-0.5 text-sm font-medium text-red-700">
                   {product.discount}% off
                 </span>

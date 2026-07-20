@@ -72,15 +72,15 @@ export default function OrderDetail() {
                 <Link to={`/products/${item.productId}`} className="font-medium hover:text-primary-600">
                   {item.product?.name}
                 </Link>
-                <p className="text-sm text-gray-500">Qty: {item.quantity} &middot; ${item.price?.toFixed(2)} each</p>
+                <p className="text-sm text-gray-500">Qty: {item.quantity} &middot; ₹{item.price?.toFixed(2)} each</p>
               </div>
-              <span className="font-medium">${(item.price * item.quantity).toFixed(2)}</span>
+              <span className="font-medium">₹{(item.price * item.quantity).toFixed(2)}</span>
             </div>
           ))}
         </div>
 
         <div className="mt-6 flex items-center justify-between border-t border-gray-200 pt-4">
-          <span className="text-lg font-bold">Total: ${order.totalAmount?.toFixed(2)}</span>
+          <span className="text-lg font-bold">Total: ₹{order.totalAmount?.toFixed(2)}</span>
           {order.orderStatus === 'PENDING' && (
             <button
               type="button"

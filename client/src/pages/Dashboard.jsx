@@ -60,7 +60,12 @@ export default function Dashboard() {
           Welcome back, {user?.name}! Role: <span className="font-medium">{user?.role}</span>
         </p>
       </div>
-
+<Link
+  to="/address"
+  className="mb-6 inline-block rounded-lg bg-primary-600 px-4 py-2 text-white hover:bg-primary-700"
+>
+  My Addresses
+</Link>
       <div className="mb-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {cards.map((card) => (
           <Link
@@ -112,7 +117,9 @@ export default function Dashboard() {
                 <img src={product.images[0]} alt={product.name} className="mb-3 aspect-square w-full rounded-lg object-cover" />
               )}
               <h3 className="line-clamp-1 font-medium">{product.name}</h3>
-              <p className="text-primary-600 font-semibold">${product.price?.toFixed(2)}</p>
+              <p className="text-primary-600 font-semibold">
+  ₹{Number(product.price).toLocaleString("en-IN")}
+</p>
             </Link>
           ))}
         </div>

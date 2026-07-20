@@ -80,12 +80,12 @@ export default function Orders() {
                 {order.items?.map((item) => (
                   <div key={item.id} className="flex items-center justify-between text-sm">
                     <span>{item.product?.name} x{item.quantity}</span>
-                    <span>${(item.price * item.quantity).toFixed(2)}</span>
+                    <span>₹{(item.price * item.quantity).toFixed(2)}</span>
                   </div>
                 ))}
               </div>
               <div className="mt-4 flex items-center justify-between border-t border-gray-100 pt-4">
-                <span className="font-semibold">Total: ${order.totalAmount?.toFixed(2)}</span>
+                <span className="font-semibold">Total: ₹{order.totalAmount?.toFixed(2)}</span>
                 <div className="flex gap-2">
                   <Link
                     to={`/orders/${order.id}`}

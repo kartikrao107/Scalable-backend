@@ -1,6 +1,5 @@
 import { NavLink, Outlet } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
-
+import { useAuth } from "../../context/AuthContext";
 const linkClass = ({ isActive }) =>
   `block rounded-lg px-4 py-2.5 text-sm font-medium transition ${
     isActive ? 'bg-primary-100 text-primary-700' : 'text-gray-600 hover:bg-gray-100'
@@ -19,6 +18,9 @@ export default function AdminLayout() {
             {(isSeller || isAdmin) && (
               <NavLink to="/admin/products" className={linkClass}>Products</NavLink>
             )}
+            <NavLink to="/admin/orders" className={linkClass}>
+  Orders
+</NavLink>
             {isAdmin && (
               <>
                 <NavLink to="/admin/categories" className={linkClass}>Categories</NavLink>

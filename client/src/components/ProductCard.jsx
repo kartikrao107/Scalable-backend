@@ -33,7 +33,12 @@ export default function ProductCard({ product, onAddToCart, onAddToWishlist }) {
         <div className="mt-2 flex items-baseline gap-2">
           <span className="text-lg font-bold text-primary-600">${discountedPrice.toFixed(2)}</span>
           {product.discount > 0 && (
-            <span className="text-sm text-gray-400 line-through">${product.price.toFixed(2)}</span>
+          <span className="text-sm text-gray-400 line-through">
+  ₹{Number(product.price).toLocaleString("en-IN", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  })}
+</span>
           )}
         </div>
         <p className="mt-1 text-xs text-gray-500">{product.stock > 0 ? `${product.stock} in stock` : 'Out of stock'}</p>
